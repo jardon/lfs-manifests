@@ -1,0 +1,58 @@
+name: "glibc"
+version: "2.43"
+license: "GPL-3.0-or-later"
+arch: amd64
+
+source:
+  url: https://ftpmirror.gnu.org/glibc/glibc-2.43.tar.xz
+  md5: "7ec2588300b299215a65aec7e6afa04f"
+  patches:
+    - url: https://www.linuxfromscratch.org/patches/lfs/13.0/glibc-fhs-1.patch
+      md5: 9a5997c3452909b1769918c759eff8a2
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:56c6020ebeffdb93e98dbc3f181c09de9827763c343789bbd2e32951dac2a4d1"
+
+plugin:
+  name: "none"
+
+build:
+  override-steps: |
+    cd $ZPKG_BUILD/linux-6.18.10
+    mkdir -p $ZPKG_DEST/usr/include
+    make mrproper
+    make headers
+    find usr/include -type f ! -name '*.h' -delete
+    cp -rv usr/include $ZPKG_DEST/usr
+
+    cd $ZPKG_BUILD
+    mkdir -p $ZPKG_DEST/lib64
+    case $(uname -m) in
+        i?86)   ln -sfv ld-linux.so.2 $ZPKG_DEST/lib/ld-lsb.so.3
+        ;;
+        x86_64) cp /usr/lib64/ld-linux-x86-64.so.2 $ZPKG_DEST/lib64/ld-lsb-x86-64.so.3
+        ;;
+    esac
+
+    mkdir -p $ZPKG_BUILD/build
+    cd $ZPKG_BUILD/build
+    echo "rootsbindir=/usr/sbin" > configparms
+    ../configure                             \
+          --prefix=/usr                      \
+          --build=$(../scripts/config.guess) \
+          --disable-nscd                     \
+          libc_cv_slibdir=/usr/lib           \
+          --enable-kernel=5.4                \
+          --with-headers=$ZPKG_DEST/usr/include/
+    make
+    make DESTDIR=$ZPKG_DEST install
+
+    sed '/RTLDLIST=/s@/usr@@g' -i $ZPKG_DEST/usr/bin/ldd
+
+build_deps:
+  - name: "linux-headers"
+    version: 6.18.10
+    source: https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.18.10.tar.xz
+    md5: 660e706a43f634b1fcd911f8839d2f61
+    extract-to: /zpkg-build-workspace/components/glibc/build
+    # rename: linux-headers

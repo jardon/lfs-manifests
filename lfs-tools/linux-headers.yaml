@@ -1,0 +1,21 @@
+name: "linux-headers"
+version: "6.18.10"
+license: "GPL-3.0-or-later"
+arch: amd64
+
+source:
+  url: https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.18.10.tar.xz
+  md5: "660e706a43f634b1fcd911f8839d2f61"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:56c6020ebeffdb93e98dbc3f181c09de9827763c343789bbd2e32951dac2a4d1"
+
+plugin:
+  name: "none"
+
+build:
+  override-steps: |
+      make mrproper
+      make headers
+      find usr/include -type f ! -name '*.h' -delete
+      cp -rv usr/include $ZPKG_DEST/usr
