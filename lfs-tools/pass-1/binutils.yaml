@@ -1,20 +1,21 @@
 name: "binutils"
 version: "2.46.0"
 license: "GPL-3.0-or-later"
-arch: amd64
+arch: x86_64
 
 source:
   url: https://sourceware.org/pub/binutils/releases/binutils-2.46.0.tar.xz
   md5: "81bb6810bcd1119819dc0804956e1c92"
 
 engine: "podman"
-base: "docker.io/jardon/autotools:latest@sha256:56c6020ebeffdb93e98dbc3f181c09de9827763c343789bbd2e32951dac2a4d1"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
 
 plugin:
   name: "autotools"
   configure-args:
     - "--prefix=/usr"
     - "--with-sysroot=$ZPKG_DEST"
+    - "--target=$ZPKG_ARCH-lfs-linux-gnu"
     - "--disable-nls"
     - "--enable-gprofng=no"
     - "--disable-werror"
