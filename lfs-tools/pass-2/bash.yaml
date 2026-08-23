@@ -1,0 +1,21 @@
+name: "bash"
+version: "5.3"
+license: "GPL-3.0-or-later"
+arch: x86_64
+
+source:
+  url: "https://ftpmirror.gnu.org/bash/bash-5.3.tar.gz"
+  md5: "977c8c0c5ae6309191e7768e28ebc951"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+
+plugin:
+  name: "autotools"
+
+build:
+  configure-args:
+    - --prefix=/usr
+    - --build=$(sh support/config.guess
+    - --host=$ZPKG_ARCH-lfs-linux-gnu
+    - --without-bash-malloc

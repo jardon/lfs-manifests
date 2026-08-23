@@ -1,0 +1,43 @@
+name: "ncurses"
+version: "6.6"
+license: "GPL-3.0-or-later"
+arch: x86_64
+
+source:
+  url: "https://invisible-mirror.net/archives/ncurses/ncurses-6.6.tar.gz"
+  md5: "dd45bf6854430af403452a7a6a40652c"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+
+plugin:
+  name: "none"
+
+build:
+  override-steps: |
+    mkdir $ZPKG_BUILD/build
+    pushd build
+      ../configure --prefix=$ZPKG_DEST AWK=gawk
+      make -C include
+      make -C progs tic
+      install progs/tic $ZPKG_DEST/bin/
+    popd
+
+    ./configure --prefix=/usr \
+      --host=$ZPKG_ARCH-lfs-linux-gnu \
+      --build=$(./config.guess) \
+      --mandir=/usr/share/man \
+      --with-manpage-format=normal \
+      --with-shared \
+      --without-normal \
+      --with-cxx-shared \
+      --without-debug \
+      --without-ada \
+      --disable-stripping \
+      AWK=gawk
+
+    make
+    make DESTDIR=$ZPKG_DEST install
+    ln -sv libncursesw.so $ZPKG_DEST/usr/lib/libncurses.so
+    sed -e 's/^#if.*XOPEN.*$/#if 1/' \
+        -i $ZPKG_DEST/usr/include/curses.h

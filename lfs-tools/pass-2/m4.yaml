@@ -1,0 +1,18 @@
+name: "m4"
+version: "1.4.21"
+license: "GPL-3.0-or-later"
+arch: x86_64
+
+source:
+  url: "https://ftpmirror.gnu.org/m4/m4-1.4.21.tar.xz"
+  md5: "8051eef7239b2f187791f2ab0034d6b7"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+
+plugin:
+  name: "autotools"
+  configure-args:
+    - --prefix=/usr
+    - --host=$ZPKG_ARCH-lfs-linux-gnu
+    - --build=$(build-aux/config.guess)

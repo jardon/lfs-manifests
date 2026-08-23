@@ -1,0 +1,30 @@
+name: "coreutils"
+version: "9.10"
+license: "GPL-3.0-or-later"
+arch: x86_64
+
+source:
+  url: "https://ftpmirror.gnu.org/coreutils/coreutils-9.10.tar.xz"
+  md5: "b0482ebec42fd48e95cb9187d566b9e4"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+
+plugin:
+  name: "none"
+
+build:
+  override-steps: |
+    ./configure --prefix=/usr \
+      --host=$ZPKG_ARCH-lfs-linux-gnu \
+      --build=$(build-aux/config.guess) \
+      --enable-install-program=hostname \
+      --enable-no-install-program=kill,uptime
+
+    make
+    make DESTDIR=$ZPKG_DEST install
+
+    mv -v $ZPKG_DEST/usr/bin/chroot $ZPKG_DEST/usr/sbin
+    mkdir -pv $ZPKG_DEST/usr/share/man/man8
+    mv -v $ZPKG_DEST/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+    sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8

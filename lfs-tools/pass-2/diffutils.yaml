@@ -1,0 +1,21 @@
+name: "diffutils"
+version: "3.12"
+license: "GPL-3.0-or-later"
+arch: x86_64
+
+source:
+  url: "https://ftpmirror.gnu.org/diffutils/diffutils-3.12.tar.xz"
+  md5: "d1b18b20868fb561f77861cd90b05de4"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+
+plugin:
+  name: "autotools"
+
+build:
+  configure-args:
+    - --prefix=/usr
+    - --host=$ZPKG_ARCH-lfs-linux-gnu
+    - gl_cv_func_strcasecmp_works=y
+    - --build=$(./build-aux/config.guess)
