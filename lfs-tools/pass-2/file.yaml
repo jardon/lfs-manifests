@@ -1,0 +1,33 @@
+name: "file"
+version: "5.46"
+license: "GPL-3.0-or-later"
+arch: x86_64
+
+source:
+  url: "https://astron.com/pub/file/file-5.46.tar.gz"
+  md5: "459da2d4b534801e2e2861611d823864"
+
+engine: "podman"
+base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+
+plugin:
+  name: "none"
+
+build:
+  override-steps: |
+    mkdir $ZPKG_BUILD/build
+    pushd $ZPKG_BUILD/build
+      ../configure --disable-bzlib      \
+                  --disable-libseccomp \
+                  --disable-xzlib      \
+                  --disable-zlib
+      make
+    popd
+
+    ./configure --prefix=/usr --host=$ZPKG_ARCH-lfs-linux-gnu --build=$(./config.guess)
+
+    make FILE_COMPILE=$(pwd)/build/src/file
+
+    make DESTDIR=$ZPKG_DEST install
+
+    rm -v $ZPKG_DEST/usr/lib/libmagic.la
