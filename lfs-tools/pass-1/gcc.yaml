@@ -46,9 +46,11 @@ build:
       --disable-libquadmath \
       --disable-libssp \
       --disable-libvtv \
+      --disable-libstdcxx \
       --enable-languages=c,c++
+
     make
-    make install DESTDIR=$ZPKG_DEST
+    make install
 
     cd $ZPKG_BUILD
     mkdir -p $ZPKG_DEST/usr/include
