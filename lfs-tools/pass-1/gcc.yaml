@@ -30,7 +30,7 @@ build:
 
     ../configure \
       --target=$ZPKG_ARCH-lfs-linux-gnu \
-      --prefix=/usr \
+      --prefix=$ZPKG_DEST/usr \
       --with-glibc-version=2.43 \
       --with-sysroot=$ZPKG_DEST \
       --with-newlib \
