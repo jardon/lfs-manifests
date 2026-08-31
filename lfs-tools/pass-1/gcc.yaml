@@ -26,8 +26,6 @@ build:
     mkdir -v $ZPKG_BUILD/build
     cd $ZPKG_BUILD/build
 
-    pwd
-
     ../configure \
       --target=$ZPKG_ARCH-lfs-linux-gnu \
       --prefix=$ZPKG_DEST/usr \
