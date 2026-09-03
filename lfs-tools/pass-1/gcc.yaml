@@ -15,6 +15,7 @@ plugin:
 
 build:
   override-steps: |
+    ln -s /bin/bash /zpkg-build-workspace/components/gcc/build/tools/usr/bin/sh
     cd $ZPKG_BUILD
     case $(uname -m) in
       x86_64)
@@ -22,6 +23,8 @@ build:
             -i.orig gcc/config/i386/t-linux64
      ;;
     esac
+
+    export PATH=$ZPKG_DEST/usr/bin:$ZPKG_BUILD/tools/usr/bin:$PATH
 
     mkdir -v $ZPKG_BUILD/build
     cd $ZPKG_BUILD/build
@@ -54,7 +57,6 @@ build:
     mkdir -p $ZPKG_DEST/usr/include
     cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
     `dirname $($ZPKG_ARCH-lfs-linux-gnu-gcc -print-libgcc-file-name)`/include/limits.h
-    
 
   dependencies:
     - name: "gmp"
@@ -77,3 +79,9 @@ build:
       md5: "7c32c39b8b6e3ae85f25156228156061"
       extract-to: "/zpkg-build-workspace/components/gcc/build"
       rename: "mpfr"
+
+    - name: "binutils"
+      version: "2.46.0"
+      source: "https://github.com/jardon/archives/releases/download/systemd-13/binutils-2.46.0-x86_64.tar.xz"
+      sha256: "3534c29adc834393ec9ed74251c33e05df52d971f0ba6dfeb81f389b8881c05f"
+      extract-to: "/zpkg-build-workspace/components/gcc/build/tools"
