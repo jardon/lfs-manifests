@@ -8,11 +8,23 @@ source:
   md5: "8051eef7239b2f187791f2ab0034d6b7"
 
 engine: "podman"
-base: "docker.io/jardon/autotools:latest@sha256:6a620efaa929ee6990a27824de9189e67d642d0c296e03b75f05b75ef80cf2a7"
+base: "docker.io/jardon/pass-1:latest@sha256:afaeeff75feaa8f7013a67eea163a1adac8dd348da0c5c7484d331342ad9f1e7"
 
 plugin:
-  name: "autotools"
-  configure-args:
-    - --prefix=/usr
-    - --host=$ZPKG_ARCH-lfs-linux-gnu
-    - --build=$(build-aux/config.guess)
+  name: "none"
+
+build:
+  override-steps: |
+    mkdir -p $ZPKG_DEST/usr/share
+    cat > $ZPKG_DEST/usr/share/config.site << EOF
+    ac_cv_func_posix_spawn_file_actions_addchdir=yes
+    ac_cv_func_posix_spawn_file_actions_addfchdir=yes
+    EOF
+    
+    ./configure \
+      --prefix=/usr \
+      --host=$ZPKG_ARCH-lfs-linux-gnu \
+      --build=$(build-aux/config.guess)
+
+    make
+    make DESTDIR=$ZPKG_DEST install
