@@ -14,10 +14,14 @@ plugin:
   name: "autotools"
   configure-args:
     - "--prefix=/usr"
-    - "--with-sysroot=$ZPKG_DEST"
+    - "--with-sysroot=$SYSROOT"
     - "--target=$ZPKG_ARCH-lfs-linux-gnu"
     - "--disable-nls"
     - "--enable-gprofng=no"
     - "--disable-werror"
     - "--enable-new-dtags"
     - "--enable-default-hash-style=gnu"
+
+build:
+  env:
+    SYSROOT: /opt/tools

@@ -14,6 +14,8 @@ plugin:
   name: "none"
 
 build:
+  env:
+    SYSROOT: /opt/tools
   override-steps: |
     ln -s /bin/bash /zpkg-build-workspace/components/gcc/build/tools/usr/bin/sh
     cd $ZPKG_BUILD
@@ -33,7 +35,7 @@ build:
       --target=$ZPKG_ARCH-lfs-linux-gnu \
       --prefix=$ZPKG_DEST/usr \
       --with-glibc-version=2.43 \
-      --with-sysroot=$ZPKG_DEST \
+      --with-sysroot=$SYSROOT \
       --with-newlib \
       --without-headers \
       --enable-default-pie \
