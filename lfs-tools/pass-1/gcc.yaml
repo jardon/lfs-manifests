@@ -8,7 +8,7 @@ source:
   md5: "b861b092bf1af683c46a8aa2e689a6fd"
 
 engine: "podman"
-base: "docker.io/jardon/autotools:latest@sha256:24711b7f15f8fff225cfe386ad503c2c73808fd42c2afec558417af2bd7f533b"
+base: "docker.io/jardon/autotools:resolute@sha256:fab64c7c65e0413e02cb3dc7ca3f66978be4cbaab916054bb44f902ad1a55858"
 
 plugin:
   name: "none"
