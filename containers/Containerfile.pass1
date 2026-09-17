@@ -1,12 +1,17 @@
 FROM docker.io/jardon/autotools:resolute@sha256:fab64c7c65e0413e02cb3dc7ca3f66978be4cbaab916054bb44f902ad1a55858
 
-RUN dnf install -y zstd automake help2man which
+RUN apt update && apt remove -y coreutils-from-uutils --allow-remove-essential
+
+RUN apt install -y zstd automake help2man gnu-coreutils
 
 COPY pass-1-0.0.1-amd64.tar.zst /tmp/
 
 RUN mkdir -p /opt/tools
 
 RUN tar xvf /tmp/pass-1-0.0.1-amd64.tar.zst -C /opt/tools/
+
+RUN ln -s bash /bin/sh.bash
+RUN mv /bin/sh.bash /bin/sh
 
 ENV PATH="/opt/tools/usr/bin:${PATH}"
 ENV CONFIG_SITE=/opt/tools/usr/share/config.site
