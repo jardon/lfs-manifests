@@ -15,12 +15,6 @@ plugin:
 
 build:
   override-steps: |
-    mkdir -p $ZPKG_DEST/usr/share
-    cat > $ZPKG_DEST/usr/share/config.site << EOF
-    ac_cv_func_posix_spawn_file_actions_addchdir=yes
-    ac_cv_func_posix_spawn_file_actions_addfchdir=yes
-    EOF
-    
     ./configure \
       --prefix=/usr \
       --host=$ZPKG_ARCH-lfs-linux-gnu \
