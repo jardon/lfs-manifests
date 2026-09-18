@@ -25,7 +25,7 @@ build:
         --disable-multilib         \
         --disable-nls              \
         --disable-libstdcxx-pch    \
-        --with-gxx-include-dir=/usr/include
+        --with-gxx-include-dir=/$ZPKG_ARCH-lfs-linux-gnu/include/c++/15.2.0
 
     make
     make install DESTDIR=$ZPKG_DEST
